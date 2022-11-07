@@ -3,6 +3,7 @@ using CommandsService.Core.Services.Grpc;
 using CommandsService.Data;
 using CommandsService.Data.Interfaces;
 using CommandsService.Data.Repositories;
+using CommandsService.Data.Seed;
 using Microservices.RabbitMQ.Extensions;
 using Microservices.RabbitMQ.Types;
 using Microsoft.EntityFrameworkCore;
@@ -31,7 +32,7 @@ namespace CommandsService
 
             app.MapControllers();
 
-            PrepDb.PrepPopulation(app);
+            PlatformSeed.SeedPlatforms(app);
 
             app.Run();
         }

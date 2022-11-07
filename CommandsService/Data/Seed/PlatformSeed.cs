@@ -2,11 +2,11 @@
 using CommandsService.Data.Interfaces;
 using CommandsService.Data.Models;
 
-namespace CommandsService.Data;
+namespace CommandsService.Data.Seed;
 
-public static class PrepDb
+public static class PlatformSeed
 {
-    public static void PrepPopulation(IApplicationBuilder applicationBuilder)
+    public static void SeedPlatforms(IApplicationBuilder applicationBuilder)
     {
         using var scope = applicationBuilder.ApplicationServices.CreateScope();
 
