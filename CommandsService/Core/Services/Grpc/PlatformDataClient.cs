@@ -34,8 +34,7 @@ public class PlatformDataClient: IPlatformDataClient
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"--> Cannot get platforms from GRPC service: {ex}");
-            return Array.Empty<Platform>();
+            throw new Exception($"--> Cannot get platforms from GRPC service: {ex}");
         }
     }
 }

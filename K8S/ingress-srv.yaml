@@ -8,7 +8,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   rules:
-    - host: dkam.microservices.com
+    - host: demo.microservices.com
       http:
         paths:
           - path: /(platformservice)/(swagger/.*)
