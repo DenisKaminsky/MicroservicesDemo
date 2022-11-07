@@ -1,0 +1,47 @@
+#Docker
+docker ps
+docker images -a
+docker build -f .\PlatformService\Dockerfile -t deniskam/platformservice .
+docker build -f .\CommandsService\Dockerfile -t deniskam/commandsservice .
+dcoker run -d -p 8080:80 -p 8081:443 --name platformservice deniskam/platformservice 
+
+docker push deniskam/platformservice
+docker push deniskam/commandsservice 
+
+
+
+#Deployment
+kubectl delete deployment platforms-depl 
+kubectl rollout restart deployment platforms-depl   
+
+kubectl applly -f platforms-depl.yaml
+kubectl applly -f commands-depl.yaml   
+kubectl applly -f ingress-srv.yaml
+
+kubectl get pods 
+kubectl get deployments
+kubectl get services
+kubectl get pvc
+kubectl get storageclass
+kubectl get namespaces     
+
+
+#SQL Server
+kubectl applly -f platforms-mssql-pvc.yaml
+kubectl create secret generic mssql --from-literal=SA_PASSWORD="denis123"
+kubectl get secrets
+kubectl apply -f platforms-mssql-depl.yaml
+
+#or
+
+#PGSQL
+kubectl apply -f .\platforms-pgsql-config.yaml
+kubectl get configmap
+kubectl apply -f .\platforms-pgsql-pv-pvc.yaml
+kubectl get pv
+kubectl get pvc
+kubectl apply -f .\platforms-pgsql-depl.yaml
+kubectl get services
+
+#Rabbit
+kubectl apply -f .\rabbitmq-depl.yaml

@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: platforms-pgsql-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: platforms-pgsql
+  template:
+    metadata:
+      labels:
+        app: platforms-pgsql
+    spec:
+      containers:
+        - name: platforms-pgsql
+          image: postgres:15
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: platforms-pgsql-config
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgredb
+      volumes:
+        - name: postgredb
+          persistentVolumeClaim:
+            claimName: platforms-pgsql-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: platforms-pgsql-clusterip-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: platforms-pgsql
+  ports:
+  - name: platforms-pgsql
+    protocol: TCP
+    port: 1433
+    targetPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: platforms-pgsql-loadbalancer
+spec:
+  type: LoadBalancer
+  selector:
+    app: platforms-pgsql
+  ports:
+  - protocol: TCP
+    port: 1433 #external
+    targetPort: 5432 #internal
