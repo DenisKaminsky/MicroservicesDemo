@@ -5,10 +5,10 @@ using Microservices.RabbitMQ.Types.Platform;
 using Microsoft.AspNetCore.Mvc;
 using PlatformService.Core.Interfaces.Http;
 using PlatformService.Data.Interfaces;
+using PlatformService.Data.Models;
 using PlatformService.DTOs;
-using PlatformService.Models;
 
-namespace PlatformService.Controllers
+namespace PlatformService.Web.REST
 {
     [ApiController]
     [Route("api/[controller]")]

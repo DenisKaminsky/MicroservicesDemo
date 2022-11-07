@@ -4,16 +4,16 @@ using CommandsService.Data.Models;
 using CommandsService.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CommandsService.Controllers;
+namespace CommandsService.Web.REST;
 
 [ApiController]
 [Route("api/commands/platforms/{platformId:int}/[controller]")]
-public class CommandsController: ControllerBase
+public class CommandsController : ControllerBase
 {
     private readonly ICommandRepository _commandRepository;
     private readonly IPlatformRepository _platformRepository;
     private readonly IMapper _mapper;
-    
+
     public CommandsController(
         ICommandRepository commandRepository,
         IPlatformRepository platformRepository,
@@ -44,7 +44,7 @@ public class CommandsController: ControllerBase
     public ActionResult<CommandReadDto> GetCommandByPlatformId(int platformId, int commandId)
     {
         Console.WriteLine($"--> GET GetCommandByPlatformId. PlatformID: {platformId}. CommandID: {commandId}");
-        
+
         var command = _commandRepository.GetCommandByPlatformId(commandId, platformId);
         var result = _mapper.Map<CommandReadDto>(command);
 
@@ -68,8 +68,8 @@ public class CommandsController: ControllerBase
         var result = _mapper.Map<CommandReadDto>(command);
 
         return CreatedAtRoute(
-            nameof(GetCommandByPlatformId), 
-            new { platformId, commandId = command.Id }, 
+            nameof(GetCommandByPlatformId),
+            new { platformId, commandId = command.Id },
             result);
     }
 }

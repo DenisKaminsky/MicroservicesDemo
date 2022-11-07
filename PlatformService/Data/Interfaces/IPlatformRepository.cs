@@ -1,4 +1,4 @@
-﻿using PlatformService.Models;
+﻿using PlatformService.Data.Models;
 
 namespace PlatformService.Data.Interfaces;
 

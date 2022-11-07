@@ -25,10 +25,14 @@ spec:
   selector:
     app: platformservice
   ports:
-  - name: platformservice
+  - name: platformservice #This one is for REST
     protocol: TCP
     port: 80
     targetPort: 80
+  - name: platformgrpc #This one is for gRPC
+    protocol: TCP
+    port: 666
+    targetPort: 666
 ---
 apiVersion: v1
 kind: Service

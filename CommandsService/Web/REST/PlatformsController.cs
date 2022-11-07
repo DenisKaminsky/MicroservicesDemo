@@ -3,7 +3,7 @@ using CommandsService.Data.Interfaces;
 using CommandsService.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CommandsService.Controllers
+namespace CommandsService.Web.REST
 {
     [Route("api/commands/[controller]")]
     [ApiController]
@@ -13,7 +13,7 @@ namespace CommandsService.Controllers
         private readonly IMapper _mapper;
 
         public PlatformsController(
-            IPlatformRepository platformRepository, 
+            IPlatformRepository platformRepository,
             IMapper mapper)
         {
             _platformRepository = platformRepository;

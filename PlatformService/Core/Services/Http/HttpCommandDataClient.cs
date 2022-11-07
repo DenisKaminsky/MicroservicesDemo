@@ -27,13 +27,8 @@ public class HttpCommandDataClient : ICommandDataClient
         
         var response = await _httpClient.PostAsync(requestUri, requestContent);
 
-        if (response.IsSuccessStatusCode)
-        {
-            Console.WriteLine("--> SendPlatformToCommandAsync - Ok");
-        }
-        else
-        {
-            Console.WriteLine("--> SendPlatformToCommandAsync - Error");
-        }
+        Console.WriteLine(response.IsSuccessStatusCode
+            ? "--> SendPlatformToCommandAsync - Ok"
+            : "--> SendPlatformToCommandAsync - Error");
     }
 }

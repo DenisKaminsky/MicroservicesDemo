@@ -1,3 +1,5 @@
+using CommandsService.Core.Interfaces.Grpc;
+using CommandsService.Core.Services.Grpc;
 using CommandsService.Data;
 using CommandsService.Data.Interfaces;
 using CommandsService.Data.Repositories;
@@ -29,6 +31,8 @@ namespace CommandsService
 
             app.MapControllers();
 
+            PrepDb.PrepPopulation(app);
+
             app.Run();
         }
 
@@ -43,6 +47,7 @@ namespace CommandsService
             
             services.AddScoped<IPlatformRepository, PlatformRepository>();
             services.AddScoped<ICommandRepository, CommandRepository>();
+            services.AddScoped<IPlatformDataClient, PlatformDataClient>();
 
             services.AddDbContext<AppDbContext>(options =>
                 options.UseInMemoryDatabase("CommandsService"));

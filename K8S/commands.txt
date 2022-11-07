@@ -1,47 +1,74 @@
-#Docker
-docker ps
-docker images -a
-docker build -f .\PlatformService\Dockerfile -t deniskam/platformservice .
-docker build -f .\CommandsService\Dockerfile -t deniskam/commandsservice .
-dcoker run -d -p 8080:80 -p 8081:443 --name platformservice deniskam/platformservice 
+# Prerequsites:
+# - Docker Desktop installed and Kubernetes enabled (Settings -> Kubernetes -> check 'Kubernetes Enabled')
 
-docker push deniskam/platformservice
-docker push deniskam/commandsservice 
-
-
-
-#Deployment
-kubectl delete deployment platforms-depl 
-kubectl rollout restart deployment platforms-depl   
-
-kubectl applly -f platforms-depl.yaml
-kubectl applly -f commands-depl.yaml   
-kubectl applly -f ingress-srv.yaml
-
-kubectl get pods 
-kubectl get deployments
-kubectl get services
-kubectl get pvc
-kubectl get storageclass
-kubectl get namespaces     
+# 1) Build Docker images. Replace 'deniskam' with your DockerHub username.
+# Run these commands from solution directory.
+    docker build -f .\PlatformService\Dockerfile -t deniskam/platformservice .
+    docker build -f .\CommandsService\Dockerfile -t deniskam/commandsservice .
+# [Optional] If you want to run a standalone local container you can use:
+    docker run -d -p 8080:80 --name platformservice deniskam/platformservice
+# [Optional] You can find all lcoal contaners and images with following commands:
+    docker ps
+    docker images -a
 
 
-#SQL Server
-kubectl applly -f platforms-mssql-pvc.yaml
-kubectl create secret generic mssql --from-literal=SA_PASSWORD="denis123"
-kubectl get secrets
-kubectl apply -f platforms-mssql-depl.yaml
+# 2) Publish Docker images to your DockerHub. Replace 'deniskam' with your DockerHub username.
+    docker push deniskam/platformservice
+    docker push deniskam/commandsservice 
 
-#or
 
-#PGSQL
-kubectl apply -f .\platforms-pgsql-config.yaml
-kubectl get configmap
-kubectl apply -f .\platforms-pgsql-pv-pvc.yaml
-kubectl get pv
-kubectl get pvc
-kubectl apply -f .\platforms-pgsql-depl.yaml
-kubectl get services
+# 3) Kubernetes Deployment
+    kubectl applly -f platforms-depl.yaml
+    kubectl applly -f commands-depl.yaml   
+    kubectl applly -f ingress-srv.yaml
+# Wait untill all deploytyments are ready (READY column):
+    kubectl get deployments
+# [Optional] You can also get other items:
+    kubectl get pods
+    kubectl get services
+    kubectl get pvc
+    kubectl get storageclass
+    kubectl get namespaces   
+# [Optional] If you need to delete a deployment you can use following command:
+    kubectl delete deployment platforms-depl 
+# [Optional] If you need to re-apply the deployment (for example after you changed an image used in the deployment)
+# you can use following command:
+    kubectl rollout restart deployment platforms-depl
 
-#Rabbit
-kubectl apply -f .\rabbitmq-depl.yaml
+
+# 4) Add a binding to your Windows "hosts" file:
+# Open "C:\Windows\System32\drivers\etc\hosts" file as administrator
+# Add "127.0.0.1 demo.microservices.com" to the end of the file. 
+# You can replace "demo.microservices.com" with any domain name you want. But do no change ip address.
+
+
+# 5) Deploy PostgreSQL database
+# Update .\platforms-pgsql-config.yaml first and set up your admin username and password.
+# Then you can apply a config
+    kubectl apply -f .\platforms-pgsql-config.yaml
+    kubectl get configmap
+# Create a persistent volume
+    kubectl apply -f .\platforms-pgsql-pv-pvc.yaml
+    kubectl get pv
+    kubectl get pvc
+# Deploy PostgreSQL Database
+    kubectl apply -f .\platforms-pgsql-depl.yaml
+    kubectl get services
+
+
+# [Optional] SQL Server (not used in this demo)
+    kubectl applly -f platforms-mssql-pvc.yaml
+    kubectl create secret generic mssql --from-literal=SA_PASSWORD="denis123"
+    kubectl get secrets
+    kubectl apply -f platforms-mssql-depl.yaml
+
+
+# 6) Deploy RabbitMQ Message Bus
+    kubectl apply -f .\rabbitmq-depl.yaml
+
+
+# 7) If you deploy everything correctly you should be able to access following services:
+# http://localhost:15672/ - RabbitMQ Admin tool. Default username and password are 'guest'
+# http://demo.microservices.com/platformservice/swagger/index.html - Swagger for PlatformService
+# http://demo.microservices.com/commandservice/swagger/index.html - Swagger for CommandService
+

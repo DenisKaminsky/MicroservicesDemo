@@ -7,6 +7,7 @@ using PlatformService.Data;
 using PlatformService.Data.Interfaces;
 using PlatformService.Data.Repositories;
 using PlatformService.Data.Seed;
+using PlatformService.Web.gRPC;
 
 namespace PlatformService
 {
@@ -29,6 +30,7 @@ namespace PlatformService
             app.UseAuthorization();
 
             app.MapControllers();
+            app.MapGrpcService<GrpcPlatformService>();
             
             PlatformSeed.SeedPlatforms(app, app.Environment.IsProduction());
 
@@ -40,25 +42,14 @@ namespace PlatformService
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
+            services.AddGrpc();
             services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             
             ConfigureRabbitMqServices(services, configuration);
+            ConfigureDbContext(services, configuration, environment);
             
             services.AddScoped<IPlatformRepository, PlatformRepository>();
-
-            if (environment.IsProduction())
-            {
-                Console.WriteLine("-> Using PGSQL");
-                services.AddDbContext<AppDbContext>(options =>
-                    options.UseNpgsql(configuration.GetConnectionString("PlatformService_PGSQL")));
-            }
-            else
-            {
-                Console.WriteLine("-> Using InMemory db");
-                services.AddDbContext<AppDbContext>(options =>
-                    options.UseInMemoryDatabase("PlatformService"));
-            }
 
             Console.WriteLine($"--> Command Service Endpoint: {configuration["Dependencies:CommandsService:Platforms"]}.");
             Console.WriteLine($"--> RabbitMQ Service: {configuration["Dependencies:RabbitMQ:Host"]}:{configuration["Dependencies:RabbitMQ:Port"]}.");
@@ -85,6 +76,22 @@ namespace PlatformService
             });
             //Configure other related queues here
             #endregion
+        }
+
+        private static void ConfigureDbContext(IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
+        {
+            if (environment.IsProduction())
+            {
+                Console.WriteLine("-> Using PGSQL");
+                services.AddDbContext<AppDbContext>(options =>
+                    options.UseNpgsql(configuration.GetConnectionString("PlatformService_PGSQL")));
+            }
+            else
+            {
+                Console.WriteLine("-> Using InMemory db");
+                services.AddDbContext<AppDbContext>(options =>
+                    options.UseInMemoryDatabase("PlatformService"));
+            }
         }
     }
 }
