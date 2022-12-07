@@ -22,16 +22,13 @@ namespace CommandsService
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             app.UseSwagger();
             app.UseSwaggerUI();
-
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
             app.MapControllers();
 
+            // Seed database on App start
             PlatformSeed.SeedPlatforms(app);
 
             app.Run();
@@ -43,17 +40,14 @@ namespace CommandsService
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            
+            services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
+
             ConfigureRabbitMqServices(services, configuration);
+            ConfigureDbContext(services);
             
             services.AddScoped<IPlatformRepository, PlatformRepository>();
             services.AddScoped<ICommandRepository, CommandRepository>();
             services.AddScoped<IPlatformDataClient, PlatformDataClient>();
-
-            services.AddDbContext<AppDbContext>(options =>
-                options.UseInMemoryDatabase("CommandsService"));
-
-            services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
         }
 
         private static void ConfigureRabbitMqServices(IServiceCollection services, IConfiguration configuration)
@@ -75,8 +69,13 @@ namespace CommandsService
                 QueueName = platformsQueueName,
                 QueueAndExchangeRoutingKey = platformsQueueAndExchangeRoutingKey
             });
-            //Configure other related queues here
             #endregion
+        }
+
+        private static void ConfigureDbContext(IServiceCollection services)
+        {
+            services.AddDbContext<AppDbContext>(options =>
+                options.UseInMemoryDatabase("CommandsService"));
         }
     }
 }

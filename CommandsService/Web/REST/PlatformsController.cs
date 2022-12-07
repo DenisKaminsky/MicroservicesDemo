@@ -23,8 +23,6 @@ namespace CommandsService.Web.REST
         [HttpGet]
         public ActionResult<IEnumerable<PlatformReadDto>> GetAllPlatforms()
         {
-            Console.WriteLine("--> GET GetAllPlatforms.");
-
             var platforms = _platformRepository.GetAllPlatforms();
             var result = _mapper.Map<IEnumerable<PlatformReadDto>>(platforms);
 

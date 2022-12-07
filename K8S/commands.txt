@@ -18,9 +18,9 @@
 
 
 # 3) Kubernetes Deployment
-    kubectl applly -f platforms-depl.yaml
-    kubectl applly -f commands-depl.yaml   
-    kubectl applly -f ingress-srv.yaml
+    kubectl apply -f platforms-depl.yaml
+    kubectl apply -f commands-depl.yaml   
+    kubectl apply -f ingress-srv.yaml
 # Wait untill all deploytyments are ready (READY column):
     kubectl get deployments
 # [Optional] You can also get other items:
@@ -57,7 +57,7 @@
 
 
 # [Optional] SQL Server (not used in this demo)
-    kubectl applly -f platforms-mssql-pvc.yaml
+    kubectl apply -f platforms-mssql-pvc.yaml
     kubectl create secret generic mssql --from-literal=SA_PASSWORD="denis123"
     kubectl get secrets
     kubectl apply -f platforms-mssql-depl.yaml

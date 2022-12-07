@@ -32,6 +32,7 @@ namespace PlatformService
             app.MapControllers();
             app.MapGrpcService<GrpcPlatformService>();
             
+            // Seed database on App start
             PlatformSeed.SeedPlatforms(app, app.Environment.IsProduction());
 
             app.Run();
@@ -50,9 +51,6 @@ namespace PlatformService
             ConfigureDbContext(services, configuration, environment);
             
             services.AddScoped<IPlatformRepository, PlatformRepository>();
-
-            Console.WriteLine($"--> Command Service Endpoint: {configuration["Dependencies:CommandsService:Platforms"]}.");
-            Console.WriteLine($"--> RabbitMQ Service: {configuration["Dependencies:RabbitMQ:Host"]}:{configuration["Dependencies:RabbitMQ:Port"]}.");
         }
 
         private static void ConfigureRabbitMqServices(IServiceCollection services, IConfiguration configuration)
@@ -74,7 +72,6 @@ namespace PlatformService
                 QueueName = platformsQueueName,
                 QueueAndExchangeRoutingKey = platformsQueueAndExchangeRoutingKey
             });
-            //Configure other related queues here
             #endregion
         }
 

@@ -18,8 +18,6 @@ public class GrpcPlatformService : GrpcPlatform.GrpcPlatformBase
 
     public override Task<GetAllPlatformsResponse> GetAllPlatforms(GetAllPlatformsRequest request, ServerCallContext context)
     {
-        Console.WriteLine("--> GRPC GetAllPlatforms");
-
         var platforms = _platformRepository.GetAll().ToArray();
 
         var response = new GetAllPlatformsResponse();

@@ -27,8 +27,6 @@ public class CommandsController : ControllerBase
     [HttpGet("")]
     public ActionResult<IEnumerable<CommandReadDto>> GetCommandsByPlatformId(int platformId)
     {
-        Console.WriteLine($"--> GET GetCommandsByPlatformId. PlatformID: {platformId}");
-
         if (!_platformRepository.PlatformExist(platformId))
         {
             return NotFound();
@@ -43,8 +41,6 @@ public class CommandsController : ControllerBase
     [HttpGet("{commandId:int}", Name = nameof(GetCommandByPlatformId))]
     public ActionResult<CommandReadDto> GetCommandByPlatformId(int platformId, int commandId)
     {
-        Console.WriteLine($"--> GET GetCommandByPlatformId. PlatformID: {platformId}. CommandID: {commandId}");
-
         var command = _commandRepository.GetCommandByPlatformId(commandId, platformId);
         var result = _mapper.Map<CommandReadDto>(command);
 
@@ -54,8 +50,6 @@ public class CommandsController : ControllerBase
     [HttpPost("")]
     public ActionResult<CommandReadDto> CreateCommand(int platformId, CommandCreateDto commandCreate)
     {
-        Console.WriteLine($"--> POST CreateCommand.");
-
         if (!_platformRepository.PlatformExist(platformId))
         {
             return BadRequest("Platform was not found");

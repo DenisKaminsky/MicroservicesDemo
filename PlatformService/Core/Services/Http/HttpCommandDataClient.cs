@@ -18,17 +18,24 @@ public class HttpCommandDataClient : ICommandDataClient
 
     public async Task SendPlatformToCommandAsync(PlatformReadDto platform)
     {
-        var requestUri = _configuration["Dependencies:CommandsService:Platforms"];
-        var requestContent = new StringContent(
-            JsonSerializer.Serialize(platform),
-            Encoding.UTF8,
-            "application/json"
-        );
-        
-        var response = await _httpClient.PostAsync(requestUri, requestContent);
+        try
+        {
+            var requestUri = _configuration["Dependencies:CommandsService:Platforms"];
+            var requestContent = new StringContent(
+                JsonSerializer.Serialize(platform),
+                Encoding.UTF8,
+                "application/json"
+            );
 
-        Console.WriteLine(response.IsSuccessStatusCode
-            ? "--> SendPlatformToCommandAsync - Ok"
-            : "--> SendPlatformToCommandAsync - Error");
+            var response = await _httpClient.PostAsync(requestUri, requestContent);
+
+            Console.WriteLine(response.IsSuccessStatusCode
+                ? "--> SendPlatformToCommandAsync - Ok"
+                : "--> SendPlatformToCommandAsync - Error");
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine($"--> Cannot send sync request: {e.Message}");
+        }
     }
 }

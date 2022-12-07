@@ -58,27 +58,13 @@ namespace PlatformService.Web.REST
 
             var result = _mapper.Map<PlatformReadDto>(platformModel);
 
-            //Send sync message
-            try
-            {
-                await _commandDataClient.SendPlatformToCommandAsync(result);
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("--> Cannot send sync request");
-            }
+            // Synchronous messaging
+            await _commandDataClient.SendPlatformToCommandAsync(result);
 
-            //Send async message
-            try
-            {
-                var platformPublishedEvent = _mapper.Map<PlatformPublishedEvent>(result);
-                platformPublishedEvent.EventType = EventType.PlatformPublished.ToString();
-                _messageBusProducer.Publish(platformPublishedEvent);
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("--> Cannot send async request");
-            }
+            // Asynchronous messaging
+            var platformPublishedEvent = _mapper.Map<PlatformPublishedEvent>(result);
+            platformPublishedEvent.EventType = EventType.PlatformPublished.ToString();
+            _messageBusProducer.Publish(platformPublishedEvent);
 
             return CreatedAtRoute(nameof(GetById), new { result.Id }, result);
         }
